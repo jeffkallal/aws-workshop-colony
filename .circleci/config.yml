@@ -1,0 +1,22 @@
+jobs:
+  build:
+    docker:
+      - image: 'circleci/ruby:2.4.1'
+    steps:
+      - colony/start-sandbox:
+          artifacts: '{''app-frontend'':''latest/my-app.latest.tar.gz''}'
+          blueprint: my-application
+          inputs: '{''AWS_INSTANCE_TYPE'': ''m5.large''}'
+          sandbox-name: test-sandbox
+      - run:
+          command: 'echo "Sandbox ID is ${SANDBOX_ID}"'
+          name: Fetch Details
+      - colony/end-sandbox:
+          sandbox-id: SANDBOX_ID
+orbs:
+  colony: quali/cloudshell-colony@1
+version: 2.1
+workflows:
+  easy:
+    jobs:
+      - build
